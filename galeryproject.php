@@ -16,15 +16,15 @@ $images = [];
 if ($selectedAlbum && in_array($selectedAlbum, $albums)) {
     $albumPath = $imagesDir . $selectedAlbum . '/';
     $imagesFiles = array_filter(scandir($albumPath), function($file) {
-        return preg_match('/\.(jpg|jpeg|png|gif|mp4|webm|avi)$/i', $file);
+        return preg_match('/\.(jpg|jpeg|png|gif|mp4|webm|ogg)$/i', $file);
     });
     $thumbsDir = $albumPath . 'thumbs/';
     foreach ($imagesFiles as $file) {
         $fullPath = $albumPath . $file;
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        if (in_array($extension, ['mp4', 'webm', 'avi'])) {
+        if (in_array($extension, ['mp4', 'webm', 'ogg'])) {
             // ВИДЕО
-            $thumbFile = preg_replace('/\.(mp4|webm|avi)$/i', '_thumb.jpg', $file);
+            $thumbFile = preg_replace('/\.(mp4|webm|ogg)$/i', '_thumb.jpg', $file);
             $thumbSrc = $thumbsDir . $thumbFile;
             $images[] = [
                 'full' => $fullPath,
@@ -54,14 +54,14 @@ if ($selectedAlbum && in_array($selectedAlbum, $albums)) {
     foreach ($albums as $album) {
         $albumPath = $imagesDir . $album . '/';
         $imagesFiles = array_filter(scandir($albumPath), function($file) {
-            return preg_match('/\.(jpg|jpeg|png|gif|mp4|webm|avi)$/i', $file);
+            return preg_match('/\.(jpg|jpeg|png|gif|mp4|webm|ogg)$/i', $file);
         });
         $thumbsDir = $albumPath . 'thumbs/';
         foreach ($imagesFiles as $file) {
             $fullPath = $albumPath . $file;
             $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (in_array($extension, ['mp4', 'webm', 'avi'])) {
-                $thumbFile = preg_replace('/\.(mp4|webm|avi)$/i', '_thumb.jpg', $file);
+            if (in_array($extension, ['mp4', 'webm', 'ogg'])) {
+                $thumbFile = preg_replace('/\.(mp4|webm|ogg)$/i', '_thumb.jpg', $file);
                 $thumbSrc = $thumbsDir . $thumbFile;
                 $allImages[] = [
                     'full' => $fullPath,
