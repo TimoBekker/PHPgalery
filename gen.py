@@ -39,7 +39,7 @@ def generate_video_thumbnail(video_path, thumb_path, time_offset='00:00:01'):
         return False
 
 # Расширение видео файлов
-video_extensions = ['mp4', 'webm', 'avi']
+video_extensions = ['mp4', 'webm', 'ogg']
 
 # Собираем список изображений и видео
 image_tasks = []
