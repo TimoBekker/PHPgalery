@@ -13,60 +13,47 @@ $hideAlbumButtons = false; // Скрыть кнопки альбомов
 
 $selectedAlbum = isset($_GET['album']) ? $_GET['album'] : null;
 $images = [];
-
-$videoExtensions = ['mp4', 'webm', 'ogg'];
-
 if ($selectedAlbum && in_array($selectedAlbum, $albums)) {
     $albumPath = $imagesDir . $selectedAlbum . '/';
     $imagesFiles = array_filter(scandir($albumPath), function($file) {
-        return preg_match('/\.(jpg|jpeg|png|gif|mp4|webm|ogg)$/i', $file);
+        return preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
     });
     $thumbsDir = $albumPath . 'thumbs/';
     foreach ($imagesFiles as $img) {
         $fullPath = $albumPath . $img;
-        $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
         $thumbSrc = $thumbsDir . $img;
         if (file_exists($thumbSrc)) {
-            $thumbUrl = $thumbSrc;
+            $images[] = [
+                'full' => $fullPath,
+                'thumb' => $thumbSrc
+            ];
         } else {
-            $thumbUrl = $fullPath;
+            $images[] = [
+                'full' => $fullPath,
+                'thumb' => $fullPath
+            ];
         }
-        // Определяем тип: видео или изображение
-        $type = (in_array($ext, ['mp4','webm','ogg']) || preg_match('/_thumb\.jpg$/i', $img)) ? 'video' : 'image';
-        $images[] = [
-            'full' => $fullPath,
-            'thumb' => $thumbUrl,
-            'type' => $type
-        ];
     }
 } else {
-    // Для общего просмотра — случайные 29 изображений
     $allImages = [];
     foreach ($albums as $album) {
         $albumPath = $imagesDir . $album . '/';
         $imagesFiles = array_filter(scandir($albumPath), function($file) {
-            return preg_match('/\.(jpg|jpeg|png|gif|mp4|webm|ogg)$/i', $file);
+            return preg_match('/\.(jpg|jpeg|png)$/i', $file);
         });
         $thumbsDir = $albumPath . 'thumbs/';
         foreach ($imagesFiles as $img) {
             $fullPath = $albumPath . $img;
-            $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
             $thumbSrc = $thumbsDir . $img;
             if (file_exists($thumbSrc)) {
-                $thumbUrl = $thumbSrc;
+                $allImages[] = ['full' => $fullPath, 'thumb' => $thumbSrc];
             } else {
-                $thumbUrl = $fullPath;
+                $allImages[] = ['full' => $fullPath, 'thumb' => $fullPath];
             }
-            $type = (in_array($ext, ['mp4','webm','ogg']) || preg_match('/_thumb\.jpg$/i', $img)) ? 'video' : 'image';
-            $allImages[] = [
-                'full' => $fullPath,
-                'thumb' => $thumbUrl,
-                'type' => $type
-            ];
         }
     }
     shuffle($allImages);
-    $images = array_slice($allImages, 0, 29);
+    $images = array_slice($allImages, 0, 29); // сколько выводить случайных миниатюр
 }
 ?>
 <!DOCTYPE html>
@@ -78,7 +65,7 @@ if ($selectedAlbum && in_array($selectedAlbum, $albums)) {
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="album-list" <?php if ($hideAlbumButtons) echo 'style="display:none;"'; ?>>
+<div class="album-list">
 <?php
 if (!$hideAlbumButtons) {
     foreach ($albums as $album) {
@@ -88,19 +75,19 @@ if (!$hideAlbumButtons) {
 ?>
 </div>
 <div class="gallery-container">
-  <h2>
+<!--  <h2> 
     <?php if ($selectedAlbum): ?>
       <?php echo htmlspecialchars($selectedAlbum); ?>
     <?php else: ?>
       Случайные изображения
     <?php endif; ?>
-  </h2>
+  </h2> -->
   <div class="thumbnails" id="thumbnailsContainer"></div>
 </div>
 <div id="modal">
   <button id="closeBtn">×</button>
   <button id="prevBtn">←</button>
-  <div id="modalContent"></div>
+  <img id="modalImage" src="" alt="Фото" />
   <button id="nextBtn">→</button>
 </div>
 <script>
