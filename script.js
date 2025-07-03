@@ -1,6 +1,6 @@
+// Изначально
 let currentIndex = 0;
 const container = document.getElementById('thumbnailsContainer');
-const modal = document.getElementById('modal');
 const modalImage = document.getElementById('modalImage');
 const modalVideo = document.getElementById('modalVideo');
 const closeBtn = document.getElementById('closeBtn');
@@ -49,13 +49,6 @@ nextBtn.onclick = () => {
     currentIndex = (currentIndex + 1) % images.length;
     showImage(currentIndex);
 };
-
-// Клик вне изображения
-window.onclick = (e) => { if (e.target === modal) {
-    modal.classList.remove('show');
-    modalVideo.pause();
-    modalVideo.src = '';
-} };
 
 // Клавиши
 document.addEventListener('keydown', (e) => {
