@@ -31,7 +31,8 @@ if ($selectedAlbum && in_array($selectedAlbum, $albums)) {
         } else {
             $thumbUrl = $fullPath;
         }
-        $type = in_array($ext, ['mp4','webm','ogg']) ? 'video' : 'image';
+        // Определяем тип: видео или изображение
+        $type = (in_array($ext, ['mp4','webm','ogg']) || preg_match('/_thumb\.jpg$/i', $img)) ? 'video' : 'image';
         $images[] = [
             'full' => $fullPath,
             'thumb' => $thumbUrl,
@@ -56,7 +57,7 @@ if ($selectedAlbum && in_array($selectedAlbum, $albums)) {
             } else {
                 $thumbUrl = $fullPath;
             }
-            $type = in_array($ext, ['mp4','webm','ogg']) ? 'video' : 'image';
+            $type = (in_array($ext, ['mp4','webm','ogg']) || preg_match('/_thumb\.jpg$/i', $img)) ? 'video' : 'image';
             $allImages[] = [
                 'full' => $fullPath,
                 'thumb' => $thumbUrl,
