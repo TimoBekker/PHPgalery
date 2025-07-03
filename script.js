@@ -2,12 +2,11 @@
 let currentIndex = 0;
 const container = document.getElementById('thumbnailsContainer');
 const modal = document.getElementById('modal');
-const modalImage = document.getElementById('modalImage');
 const closeBtn = document.getElementById('closeBtn');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const modalContent = document.getElementById('modalContent');
 
-// Функция для применения темы
 function applyTheme() {
   if (darkThemeFlag) {
     document.body.classList.add('dark');
@@ -17,12 +16,11 @@ function applyTheme() {
 }
 applyTheme();
 
-// Обработка отображения кнопок альбомов
 if (hideAlbumButtons) {
   document.querySelector('.album-list').style.display = 'none';
 }
 
-// Создание миниатюры
+// Создаем миниатюру
 function createThumbnail(src, callback) {
   const img = new Image();
   img.crossOrigin = 'Anonymous';
@@ -52,27 +50,43 @@ function renderThumbnails() {
       imgEl.setAttribute('data-index', index);
       imgEl.onclick = () => {
         currentIndex = index;
-        showImage(currentIndex);
+        showMedia(currentIndex);
       };
       container.appendChild(imgEl);
     });
   });
 }
 
-function showImage(index) {
+function showMedia(index) {
   modal.classList.add('show');
-  modalImage.src = images[index].full;
+  modalContent.innerHTML = ''; // очистка прошлого
+  const media = images[index];
+
+  if (media.type === 'video') {
+    const video = document.createElement('video');
+    video.src = media.full;
+    video.controls = true;
+    video.style.maxWidth = '80%';
+    video.style.maxHeight = '80%';
+    modalContent.appendChild(video);
+  } else {
+    const img = document.createElement('img');
+    img.src = media.full;
+    img.style.maxWidth = '80%';
+    img.style.maxHeight = '80%'
+    modalContent.appendChild(img);
+  }
 }
 
 // Обработчики
 closeBtn.onclick = () => { modal.classList.remove('show'); };
 prevBtn.onclick = () => {
   currentIndex = (currentIndex - 1 + images.length) % images.length;
-  showImage(currentIndex);
+  showMedia(currentIndex);
 };
 nextBtn.onclick = () => {
   currentIndex = (currentIndex + 1) % images.length;
-  showImage(currentIndex);
+  showMedia(currentIndex);
 };
 window.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
 document.addEventListener('keydown', (e) => {
